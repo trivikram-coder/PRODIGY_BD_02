@@ -7,7 +7,7 @@ dotenv.config()
 app.use(express.json())
 app.use("/users",authRoutes)
 app.get("/",(req,res)=>{
-    res.send("Task 1 Server running successfully ✅✅✅")
+    res.send("Task 2 Server running successfully ✅✅✅")
 })
 db()
 const PORT=process.env.PORT || 3000

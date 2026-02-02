@@ -1,9 +1,9 @@
-User CRUD API (In-Memory)
+User CRUD API (MongoDB-Based)
 📌 Overview
 
-This project is a simple REST API that performs basic CRUD (Create, Read, Update, Delete) operations on a User resource using in-memory storage (HashMap-style object).
+This project is a RESTful API that performs basic CRUD (Create, Read, Update, Delete) operations on a User resource using MongoDB for persistent storage.
 
-No database is used. Data exists only while the server is running.
+The API follows REST standards, supports partial updates, validates inputs, and handles errors with proper HTTP status codes.
 
 ✨ Features
 
@@ -27,11 +27,11 @@ Proper HTTP status codes and error handling
 
 Each user contains:
 
-id (UUID)
+uId (UUID – public identifier)
 
 name (string)
 
-email (string)
+email (string, unique)
 
 age (number)
 
@@ -41,9 +41,11 @@ Node.js
 
 Express.js
 
-In-memory HashMap (JavaScript Object)
+MongoDB
 
-UUID
+Mongoose
+
+UUID / Crypto
 
 Swagger (API Documentation)
 
@@ -51,11 +53,13 @@ Swagger (API Documentation)
 
 Install dependencies
 
+Configure MongoDB connection
+
 Start the server
 
 Open Swagger UI to test APIs
 
-⚠️ Note: Data is stored in memory and will be lost on server restart.
+⚠️ Note: Data is stored in MongoDB and persists even after server restarts.
 
 📚 API Endpoints
 Method	Endpoint	Description
@@ -67,24 +71,24 @@ DELETE	/users/{id}	Delete user
 📥 GET /users – Get All Users
 Description
 
-Returns a list of all users stored in memory.
+Returns a list of all users stored in the database.
 
-Response
+Responses
 
 200 OK → List of users
 
-200 OK (empty list) → If no users exist
+404 Not Found → No users found
 
 Example Response
 [
   {
-    "id": "uuid-1",
+    "uId": "uuid-1",
     "name": "John",
     "email": "john@gmail.com",
     "age": 25
   },
   {
-    "id": "uuid-2",
+    "uId": "uuid-2",
     "name": "Alice",
     "email": "alice@gmail.com",
     "age": 22
@@ -95,27 +99,32 @@ Example Response
 
 Invalid email format → 400 Bad Request
 
-Duplicate email → 400 Bad Request
+Missing required fields → 400 Bad Request
+
+Duplicate email → 409 Conflict
 
 User not found → 404 Not Found
 
-Successful delete → 204 No Content
+Successful delete → 200 OK
 
 📝 Notes
 
-Uses in-memory hashmap for storage
+Uses MongoDB for persistent storage
 
-Focused only on User CRUD
+No in-memory data structures
+
+Focused only on User CRUD operations
 
 No authentication or authorization
 
-Designed for interview and learning purposes
+Designed for interview preparation and learning
 
 📄 License
 
 Educational use only.
 
 🔹 GET /users – Minimal Method (for understanding)
-app.get('/users', (req, res) => {
-  res.status(200).json(Object.values(users));
+app.get('/users', async (req, res) => {
+  const users = await User.find();
+  res.status(200).json(users);
 });
